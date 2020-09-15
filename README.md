@@ -49,3 +49,48 @@ We will follow Rolling deployment strategy in this project.
 * AWS CLI
 * Ansible
 * AWS Elastic Kubernetes Service
+
+## Installation Dependencies
+1. Create Ubuntu EC2 instance
+1. install AWSCLI
+ ``curl https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o awscli-bundle.zip
+ apt install unzip python
+ unzip awscli-bundle.zip
+ #sudo apt-get install unzip - if you dont have unzip in your system
+ ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws``
+1. Install kubectl on ubuntu instance
+``curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+ chmod +x ./kubectl
+ sudo mv ./kubectl /usr/local/bin/kubectl``
+1. Install kops on ubuntu instance
+`` curl -LO https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
+ chmod +x kops-linux-amd64
+ sudo mv kops-linux-amd64 /usr/local/bin/kops``
+1. Create an IAM user/role with Route53, EC2, IAM and S3 full access
+1. Attach IAM role to ubuntu instance
+1. Create a Route53 private hosted zone (you can create Public hosted zone if you have a domain)
+``Routeh53 --> hosted zones --> created hosted zone  
+Domain Name: valaxy.net
+Type: Private hosted zone for Amzon VPC``
+1. create an S3 bucket
+`` aws s3 mb s3://demo.k8s.capstone.net``
+1. Expose environment variable:
+`` export KOPS_STATE_STORE=s3://demo.k8s.capstone.net``
+1. Create sshkeys before creating cluster
+`` ssh-keygen``
+1. Create kubernetes cluster definitions on S3 bucket
+``kops create cluster --cloud=aws --zones=us-west-2b --name=demo.k8s.capstone.net --dns-zone=capstone.net --dns private`` 
+1. Create kubernetes cluser
+``kops update cluster demo.k8s.capstone.net --yes``
+1. Validate your cluster
+`` kops validate cluster``
+1. To list nodes
+``kubectl get nodes``
+1. To delete cluster
+`` kops delete cluster demo.k8s.capstone.net --yes``
+
+## References
+1. [Simple DevOps Project-1](https://www.youtube.com/watch?v=Z9G5stlXoyg)
+1. [Simple DevOps Project-2](https://www.youtube.com/watch?v=nE4b9mW2ym0) 
+1. [Simple DevOps Project 3](https://www.youtube.com/watch?v=nMLQgXf8tZ0)
+1. [Simple DevOps Project 5](https://www.youtube.com/watch?v=gVjLDwcA6sQ)
