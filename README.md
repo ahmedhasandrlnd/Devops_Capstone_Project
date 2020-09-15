@@ -1,6 +1,6 @@
-# Devops_Capstone_Project
-## Ahmed M. Hasan
-## Udacity DevOps Nanodegree
+# Devops Capstone Project
+### Ahmed M. Hasan
+### Udacity DevOps Nanodegree
 
 
 ## Introduction
@@ -15,6 +15,12 @@ These include:
 
 ## Proposed Pipeline
 ![Pipeline](images/pipeline.JPG)
+
+A Pipeline is a set of tools and processes to automate the CI/CD.
+
+* Continuous Integration (CI) means newly developed code changes of a project are periodically built, tested, and integrated into a shared repository like Git. Then, the integrated code is verified and tested using automated tools.
+
+* Continuous Delivery (CD) is the process of automating the release of the merged and validated code to a repository and finally release a production-ready build to the production environment.
 
 ## Prerequisites
 * AWS Account
