@@ -58,12 +58,19 @@ We will follow Rolling deployment strategy in this project.
 yum install docker
 service docker start
 ```
+
 1. create a new user for Docker management and add him to Docker (default) group
 ```
 useradd dockeradmin
 passwd dockeradmin
 usermod -aG docker dockeradmin
 ```
+1. Install Hadolint
+```
+sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64
+sudo chmod +x /bin/hadolint
+```
+
 1. Write a Docker file under /opt/docker
 ```
 mkdir /opt/docker
@@ -79,6 +86,7 @@ MAINTAINER "Ahmed"
 # copy war file on to container 
 COPY ./webapp.war /usr/local/tomcat/webapps
 ```
+
 1. Login to Jenkins console and add Docker server to execute commands from Jenkins
 Manage Jenkins --> Configure system --> Publish over SSH --> add Docker server and credentials
 
