@@ -15,3 +15,19 @@ These include:
 
 ## Proposed Pipeline
 ![Pipeline](images/pipeline.JPG)
+
+## Prerequisites
+* AWS Account
+* GitHub Account
+* Docker ID
+
+## Used Tools
+* AWS EC2 instance
+* Git
+* Java
+* Python
+* Jenkins
+* Docker
+* AWS CLI
+* Ansible
+* AWS Elastic Kubernetes Service
