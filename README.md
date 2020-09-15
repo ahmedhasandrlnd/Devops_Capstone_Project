@@ -50,44 +50,135 @@ We will follow Rolling deployment strategy in this project.
 * Ansible
 * AWS Elastic Kubernetes Service
 
-## Installation Dependencies
+## Set-up Docker Application
+1. Launch an EC2 instance for Docker host
+
+1. Install docker on EC2 instance and start services
+```
+yum install docker
+service docker start
+```
+1. create a new user for Docker management and add him to Docker (default) group
+```
+useradd dockeradmin
+passwd dockeradmin
+usermod -aG docker dockeradmin
+```
+1. Write a Docker file under /opt/docker
+```
+mkdir /opt/docker
+```
+```
+vi Dockerfile
+# Pull base image 
+From tomcat:8-jre8 
+
+# Maintainer
+MAINTAINER "Ahmed" 
+
+# copy war file on to container 
+COPY ./webapp.war /usr/local/tomcat/webapps
+```
+1. Login to Jenkins console and add Docker server to execute commands from Jenkins
+Manage Jenkins --> Configure system --> Publish over SSH --> add Docker server and credentials
+
+1. Create Jenkins job
+
+A) Source Code Management
+Repository : https://github.com/ahmedhasandrlnd/hello-world.git
+Branches to build : */master
+B) Build Root POM: pom.xml
+Goals and options : clean install package
+C) send files or execute commands over SSH Name: docker_host
+Source files : webapp/target/*.war Remove prefix : webapp/target Remote directory : //opt//docker
+Exec command[s] :
+```
+docker stop valaxy_demo;
+docker rm -f valaxy_demo;
+docker image rm -f valaxy_demo;
+cd /opt/docker;
+docker build -t valaxy_demo .
+```
+D) send files or execute commands over SSH
+Name: docker_host
+Exec command : 
+```
+docker run -d --name valaxy_demo -p 8090:8080 valaxy_demo
+```
+E) Login to Docker host and check images and containers. (no images and containers)
+
+F) Execute Jenkins job
+
+G) check images and containers again on Docker host. This time an image and container get creates through Jenkins job
+
+H) Access web application from browser which is running on container
+```
+<docker_host_Public_IP>:8090
+```
+
+
+## Set-up Kubernetes Application
 1. Create Ubuntu EC2 instance
 1. install AWSCLI
- ``curl https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o awscli-bundle.zip
+ ```
+ curl https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o awscli-bundle.zip
  apt install unzip python
  unzip awscli-bundle.zip
  #sudo apt-get install unzip - if you dont have unzip in your system
- ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws``
+ ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+ ```
 1. Install kubectl on ubuntu instance
-``curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+```
+curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
  chmod +x ./kubectl
- sudo mv ./kubectl /usr/local/bin/kubectl``
+ sudo mv ./kubectl /usr/local/bin/kubectl
+ ```
 1. Install kops on ubuntu instance
-`` curl -LO https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
+```
+ curl -LO https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
  chmod +x kops-linux-amd64
- sudo mv kops-linux-amd64 /usr/local/bin/kops``
+ sudo mv kops-linux-amd64 /usr/local/bin/kops
+ ```
 1. Create an IAM user/role with Route53, EC2, IAM and S3 full access
 1. Attach IAM role to ubuntu instance
 1. Create a Route53 private hosted zone (you can create Public hosted zone if you have a domain)
-``Routeh53 --> hosted zones --> created hosted zone  
+```
+Routeh53 --> hosted zones --> created hosted zone  
 Domain Name: valaxy.net
-Type: Private hosted zone for Amzon VPC``
+Type: Private hosted zone for Amzon VPC
+```
 1. create an S3 bucket
-`` aws s3 mb s3://demo.k8s.capstone.net``
+```
+ aws s3 mb s3://demo.k8s.capstone.net
+```
 1. Expose environment variable:
-`` export KOPS_STATE_STORE=s3://demo.k8s.capstone.net``
+``` 
+export KOPS_STATE_STORE=s3://demo.k8s.capstone.net
+```
 1. Create sshkeys before creating cluster
-`` ssh-keygen``
+```
+ssh-keygen
+```
 1. Create kubernetes cluster definitions on S3 bucket
-``kops create cluster --cloud=aws --zones=us-west-2b --name=demo.k8s.capstone.net --dns-zone=capstone.net --dns private`` 
+```
+kops create cluster --cloud=aws --zones=us-west-2b --name=demo.k8s.capstone.net --dns-zone=capstone.net --dns private
+``` 
 1. Create kubernetes cluser
-``kops update cluster demo.k8s.capstone.net --yes``
+```
+kops update cluster demo.k8s.capstone.net --yes
+```
 1. Validate your cluster
-`` kops validate cluster``
+```
+ kops validate cluster
+```
 1. To list nodes
-``kubectl get nodes``
+```
+kubectl get nodes
+```
 1. To delete cluster
-`` kops delete cluster demo.k8s.capstone.net --yes``
+``` 
+kops delete cluster demo.k8s.capstone.net --yes
+```
 
 ## References
 1. [Simple DevOps Project-1](https://www.youtube.com/watch?v=Z9G5stlXoyg)
