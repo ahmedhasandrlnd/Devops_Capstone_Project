@@ -53,25 +53,24 @@ We will follow Rolling deployment strategy in this project.
 ## Set-up Docker Application
 1. Launch an EC2 instance for Docker host
 
-1. Install docker on EC2 instance and start services
+2. Install docker on EC2 instance and start services
 ```
 yum install docker
 service docker start
 ```
-
-1. create a new user for Docker management and add him to Docker (default) group
+3. create a new user for Docker management and add him to Docker (default) group
 ```
 useradd dockeradmin
 passwd dockeradmin
 usermod -aG docker dockeradmin
 ```
-1. Install Hadolint
+4. Install Hadolint
 ```
 sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64
 sudo chmod +x /bin/hadolint
 ```
 
-1. Write a Docker file under /opt/docker
+5. Write a Docker file under /opt/docker
 ```
 mkdir /opt/docker
 ```
@@ -87,10 +86,10 @@ MAINTAINER "Ahmed"
 COPY ./webapp.war /usr/local/tomcat/webapps
 ```
 
-1. Login to Jenkins console and add Docker server to execute commands from Jenkins
+6. Login to Jenkins console and add Docker server to execute commands from Jenkins
 Manage Jenkins --> Configure system --> Publish over SSH --> add Docker server and credentials
 
-1. Create Jenkins job
+7. Create Jenkins job
 
 A) Source Code Management
 Repository : https://github.com/ahmedhasandrlnd/hello-world.git
@@ -117,13 +116,13 @@ Exec command :
 docker run -d --name valaxy_demo -p 8090:8080 valaxy_demo
 ```
 
-E) Login to Docker host and check images and containers. (no images and containers)
+8. Login to Docker host and check images and containers. (no images and containers)
 
-F) Execute Jenkins job
+9. Execute Jenkins job
 
-G) check images and containers again on Docker host. This time an image and container get creates through Jenkins job
+10. check images and containers again on Docker host. This time an image and container get creates through Jenkins job
 
-H) Access web application from browser which is running on container
+11. Access web application from browser which is running on container
 ```
 <docker_host_Public_IP>:8090
 ```
@@ -131,7 +130,7 @@ H) Access web application from browser which is running on container
 
 ## Set-up Kubernetes Application
 1. Create Ubuntu EC2 instance
-1. install AWSCLI
+2. install AWSCLI
  ```
  curl https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o awscli-bundle.zip
  apt install unzip python
@@ -139,55 +138,55 @@ H) Access web application from browser which is running on container
  #sudo apt-get install unzip - if you dont have unzip in your system
  ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
  ```
-1. Install kubectl on ubuntu instance
+3. Install kubectl on ubuntu instance
 ```
 curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
  chmod +x ./kubectl
  sudo mv ./kubectl /usr/local/bin/kubectl
  ```
-1. Install kops on ubuntu instance
+4. Install kops on ubuntu instance
 ```
  curl -LO https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
  chmod +x kops-linux-amd64
  sudo mv kops-linux-amd64 /usr/local/bin/kops
  ```
-1. Create an IAM user/role with Route53, EC2, IAM and S3 full access
-1. Attach IAM role to ubuntu instance
-1. Create a Route53 private hosted zone (you can create Public hosted zone if you have a domain)
+5. Create an IAM user/role with Route53, EC2, IAM and S3 full access
+6. Attach IAM role to ubuntu instance
+7. Create a Route53 private hosted zone (you can create Public hosted zone if you have a domain)
 ```
 Routeh53 --> hosted zones --> created hosted zone  
 Domain Name: valaxy.net
 Type: Private hosted zone for Amzon VPC
 ```
-1. create an S3 bucket
+8. create an S3 bucket
 ```
  aws s3 mb s3://demo.k8s.capstone.net
 ```
-1. Expose environment variable:
+9. Expose environment variable:
 ``` 
 export KOPS_STATE_STORE=s3://demo.k8s.capstone.net
 ```
-1. Create sshkeys before creating cluster
+10. Create sshkeys before creating cluster
 ```
 ssh-keygen
 ```
-1. Create kubernetes cluster definitions on S3 bucket
+11. Create kubernetes cluster definitions on S3 bucket
 ```
 kops create cluster --cloud=aws --zones=us-west-2b --name=demo.k8s.capstone.net --dns-zone=capstone.net --dns private
 ``` 
-1. Create kubernetes cluser
+12. Create kubernetes cluser
 ```
 kops update cluster demo.k8s.capstone.net --yes
 ```
-1. Validate your cluster
+13. Validate your cluster
 ```
  kops validate cluster
 ```
-1. To list nodes
+14. To list nodes
 ```
 kubectl get nodes
 ```
-1. To delete cluster
+15. To delete cluster
 ``` 
 kops delete cluster demo.k8s.capstone.net --yes
 ```
