@@ -155,16 +155,16 @@ curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s htt
 7. Create a Route53 private hosted zone (you can create Public hosted zone if you have a domain)
 ```
 Routeh53 --> hosted zones --> created hosted zone  
-Domain Name: valaxy.net
+Domain Name: project.net
 Type: Private hosted zone for Amzon VPC
 ```
 8. create an S3 bucket
 ```
- aws s3 mb s3://demo.k8s.capstone.net
+ aws s3 mb s3://devops.capstone.project.net
 ```
 9. Expose environment variable:
 ``` 
-export KOPS_STATE_STORE=s3://demo.k8s.capstone.net
+export KOPS_STATE_STORE=s3://devops.capstone.project.net
 ```
 10. Create sshkeys before creating cluster
 ```
@@ -172,7 +172,7 @@ ssh-keygen
 ```
 11. Create kubernetes cluster definitions on S3 bucket
 ```
-kops create cluster --cloud=aws --zones=us-west-2b --name=demo.k8s.capstone.net --dns-zone=capstone.net --dns private
+kops create cluster --cloud=aws --zones=us-west-2b --name=devops.capstone.project.net --dns-zone=project.net --dns private
 ``` 
 12. Create kubernetes cluser
 ```
@@ -190,6 +190,40 @@ kubectl get nodes
 ``` 
 kops delete cluster demo.k8s.capstone.net --yes
 ```
+
+## Install AWSCLI
+![Install AWSCLI](images/install_AWSCLI.JPG)
+
+## Install Kubectl
+![Insall kubectl](images/install_kubectl.JPG)
+
+## Kubernetes Roles
+![k8s role](images/k8s-role.JPG)
+
+## Kubernetes clustes
+![Kube Cluster](images/kube_cluster.JPG)
+
+## Linting check- No Error
+![No error](images/linting_test_noerror.JPG)
+
+## Linting check- Error
+![Error](images/linting_test_error.JPG)
+
+## Blue Ocean
+![Blue Ocean](images/blue_ocean.JPG)
+
+## Version-A Deployment
+![Version A](images/versionA_docker.JPG)
+
+## Version-B Deployment (Rolling Deployment)
+![Version B](images/versionB_docker.JPG)
+
+## Route53 
+![Route53](images/route53.JPG)
+
+## EC2 Instances
+![EC2_instance](images/ec2_instances.JPG)
+
 
 ## References
 1. [Simple DevOps Project-1](https://www.youtube.com/watch?v=Z9G5stlXoyg)
